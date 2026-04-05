@@ -382,9 +382,16 @@ In a POM, we can define locators in the constructor itself — remember that loc
 class LoginPage {
   constructor(page) {
     super(page);
-    this.loginButton = page.getByRole("button", { name: "Login" });
-    this.passwordInput = page.getByLabel("Password");
-    this.emailInput = page.getByLabel("Email");
+    this.loginButton = page.getByRole("button", { name: "Continue" });
+    this.password = page.getByLabel("Password");
+    this.userName = page.getByLabel("Email");
+    this.invalidCredentialsError = page.getByText(
+      "Email or password is incorrect",
+    );
+    this.invalidEmailError = page.getByText("Enter a valid email please");
+    this.initialHeading = page.getByRole("heading", {
+      name: "Log into my account",
+    });
   }
 
   // ...
@@ -408,12 +415,10 @@ test("Sample test", async ({ page }) => {
 In addition to locators, POMs also include methods that perform common actions on those elements, like filling out a group of related input fields.
 
 ```js
-class LoginPage {
-  // ...
-  async fillEmailAndPasswordInputs(email, password) {
-    await this.emailInput.fill(email);
-    await this.passwordInput.fill(password);
-  }
+async fillEmailAndPasswordInputs(email, password) {
+  await this.userName.fill(email);
+  await this.password.fill(password);
+}
 }
 ```
 
@@ -486,10 +491,11 @@ Here's an an actual example from the Penpot repository:
 ```js
 // frontend/playwright/ui/pages/WorkspacePage.js
 export class WorkspacePage extends BaseWebSocketPage {
-  static async init(page) {
-    await BaseWebSocketPage.init(page);
+  constructor(page, options) {
+    super(page);
     // ...
   }
+}
 }
 ```
 
